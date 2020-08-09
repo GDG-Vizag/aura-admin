@@ -25,6 +25,7 @@
             :speakerData="speakerInfo"
             v-if="(!showLoader && !userNotFound) && (role=='Super Admin' || role=='Admin')"
             @editedSuccess="showSnakeBar"
+            @message="showMessageSnakeBar"
           />
           <DeleteSpeaker
             :SpeakerInfo="speakerInfo"
@@ -106,7 +107,7 @@
                 <b>Company</b>
               </p>
               <p class="mt-1 mb-0 google-font mt-0" style="font-size:110%">{{speakerInfo.company.name}}</p>
-
+              <div v-if="(role=='Super Admin' || role=='Admin')">
               <p class="mb-0 mt-3">
                 <b>Email</b>
               </p>
@@ -116,7 +117,7 @@
                 <b>Mobile</b>
               </p>
               <p class="mt-0 mb-0 google-font mt-0" style="font-size:110%">{{speakerInfo.mbnumber.length?speakerInfo.mbnumber:'No Data Found'}}</p>
-
+              </div>
               <p class="mb-0 mt-3">
                 <b>User ID</b>
               </p>
@@ -216,6 +217,10 @@ export default {
         console.log(e)
         this.isLoading = false
       })
+    },
+    showMessageSnakeBar(text){
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
     },
     showSnakeBar(text) {
       this.snakeBarMessage = text;

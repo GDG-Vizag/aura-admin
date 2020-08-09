@@ -74,9 +74,20 @@
                         outlined
                         ></v-text-field>
                     </v-col>
+                    <v-col md="4" xs="4" cols="12" class="pa-1 ma-0">
+                      <v-text-field
+                        v-model="updatedData.pocEmail"
+                        class="ma-0"
+                        label="Partner POC Email"
+                        outlined
+                      ></v-text-field>
+                    </v-col>
 
-                    <v-col md="8" xs="8" cols="12" class="pa-1 ma-0">
-                        <v-text-field v-model="updatedData.image" class="ma-0" label="Logo URL" outlined></v-text-field>
+                    <v-col md="7" xs="7" cols="8" class="pa-1 ma-0">
+                      <v-text-field v-model="updatedData.image" class="ma-0" label="Image URL" outlined></v-text-field>
+                    </v-col>
+                    <v-col md="4" xs="4" cols="4" class="pa-1 ma-0">
+                      <UploadImage type="partner" :userId="updatedData.id" @message="showMessageSnakeBar" @uploadedImage="imageUploadDone"/>
                     </v-col>
 
                     <v-col md="12" xs="12" cols="12" class="pa-1 ma-0">
@@ -169,6 +180,9 @@ export default {
   props: {
     partnerData: {}
   },
+  components:{
+    UploadImage: () => import("@/components/Common/ImageUpload"),
+  },
   data() {
     return {
       imageUpload: [],
@@ -180,10 +194,6 @@ export default {
         v => !!v || "Name is required",
         v => (v && v.length <= 50) || "Name must be less than 50 characters"
       ],
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-      ],
       dialog: false,
       loading: false,
       items: [true, false],
@@ -194,6 +204,7 @@ export default {
         des: this.partnerData.des,
         image: this.partnerData.image,
         id: this.partnerData.id,
+        pocEmail:this.partnerData.pocemail || "",
         socialLinks: {
           facebook: this.partnerData.socialLinks.facebook,
           github: this.partnerData.socialLinks.github,
@@ -208,6 +219,12 @@ export default {
     ...mapState(['userDetails'])
   },
   methods: {
+    showMessageSnakeBar(text){
+      this.$emit("message", text);
+    },
+    imageUploadDone(text){
+      this.updatedData.image = text;
+    },
     UpdateData() {
       if (this.$refs.form.validate()) {
         this.loading = true
@@ -218,6 +235,7 @@ export default {
           des: this.updatedData.des,
           image: this.updatedData.image,
           id: this.updatedData.id,
+          pocemail:this.updatedData.pocEmail,
           lastUpdatedOn: new Date(),
           lastUpdatedBy: {
             name: this.userDetails.name,
